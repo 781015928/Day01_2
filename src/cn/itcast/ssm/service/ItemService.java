@@ -10,7 +10,13 @@ import cn.itcast.ssm.po.ItemsQueryVo;
  */
 
 public interface ItemService {
+
     List<ItemsCustom> findItemsList(ItemsQueryVo itemsQueryVo) throws Exception;
+
+
+    ItemsCustom findItemsById(Integer id) throws Exception;
+
+    void updateItems(Integer id, ItemsCustom itemsCustom) throws Exception;
 
 
 }
