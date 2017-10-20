@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +27,6 @@ public class ItemController {
     @Autowired
     ItemService itemService;
 
-
     @RequestMapping(value = "/findItemsList")
     public String findItemsList(Model model, ItemsQueryVo itemsQueryVo) throws Exception {
         //相当 于request的setAttribut，在jsp页面中通过itemsList取数据
@@ -42,7 +43,7 @@ public class ItemController {
     }
 
     @RequestMapping(value = "/editItems", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView editItems(@RequestParam("id") int id) throws Exception {
+    public ModelAndView editItems(@RequestParam("id") Integer id) throws Exception {
         String name = Thread.currentThread().getName();
         System.err.println(name);
         logger.error(name);
@@ -56,10 +57,20 @@ public class ItemController {
         modelAndView.setViewName("items/editItems");
         return modelAndView;
     }
-
     @RequestMapping(value = "/editItemsSubmit", method = {RequestMethod.POST})
-    public String editItemsSubmit(ItemsCustom itemsCustom) throws Exception {
+    public String editItemsSubmit(Model model,@Validated ItemsCustom itemsCustom, BindingResult bindingResult) throws Exception {
         String name = Thread.currentThread().getName();
+
+       if( bindingResult.hasErrors()) {
+           bindingResult.getAllErrors().forEach( (error)->{
+               logger.error(error.getDefaultMessage());
+
+           });
+           model.addAttribute("allError", bindingResult.getAllErrors());
+
+           return "items/editItems";
+       }
+
         System.out.println(name);
         logger.error(name);
         itemService.updateItems(itemsCustom.getId(), itemsCustom);

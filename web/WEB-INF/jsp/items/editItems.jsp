@@ -9,7 +9,20 @@
 <title>修改商品信息</title>
 
 </head>
-<body> 
+<body>
+
+<c:if test="${allError!=null}">
+	<c:forEach items="${allError}" var="error">
+			
+
+		<script>alert('${error.defaultMessage}');</script>
+
+	</c:forEach>
+
+
+</c:if>
+
+
 
 <form id="itemForm" action="${pageContext.request.contextPath }/editItemsSubmit.action" method="post" >
 <input type="hidden" name="id" value="${itemsCustom.id }"/>
